@@ -1,0 +1,87 @@
+[
+ 
+  {
+    "id": 2,
+    "name": "Modern Furniture Collection",
+    "image": "/furniture/modern.png",
+    "model": "/models/modern_furniture.glb",
+    "price": 1499,
+    "description": "Contemporary furniture set with clean lines and minimalist design. Perfect blend of form and function for modern living spaces.",
+    "dimensions": "Width: 280cm, Height: 190cm, Depth: 220cm",
+    "features": [
+      "Modular design",
+      "Built-in storage",
+      "Easy assembly",
+      "Stain-resistant finish"
+    ],
+    "materials": ["Engineered Wood", "Aluminum", "High-grade Fabric"],
+    "color": "Light Gray",
+    "inStock": true,
+    "deliveryTime": "2-3 weeks",
+    "warranty": "5 years",
+    "category": "Modern Sets"
+  },
+  {
+    "id": 3,
+    "name": "Single Seater Sofa",
+    "image": "/furniture/single-sofa.png",
+    "model": "/models/sofa_single.glb",
+    "price": 499,
+    "description": "Compact and comfortable single-seater sofa perfect for small spaces. Features ergonomic design and premium materials.",
+    "dimensions": "Width: 90cm, Height: 85cm, Depth: 95cm",
+    "features": [
+      "High-density foam",
+      "Removable covers",
+      "Spring suspension",
+      "Ergonomic design"
+    ],
+    "materials": ["Hardwood Frame", "Premium Fabric", "Steel Springs"],
+    "color": "Charcoal Gray",
+    "inStock": true,
+    "deliveryTime": "1-2 weeks",
+    "warranty": "3 years",
+    "category": "Sofas"
+  },
+  {
+    "id": 1,
+    "name": "Three Seater Sofa",
+    "image": "/furniture/sofa.png",
+    "model": "/models/sofa.glb",
+    "price": 899,
+    "description": "Spacious three-seater sofa designed for both comfort and style. Perfect for family rooms and entertainment spaces.",
+    "dimensions": "Width: 220cm, Height: 85cm, Depth: 95cm",
+    "features": [
+      "Deep seats",
+      "Reinforced frame",
+      "Stain-resistant fabric",
+      "Extra cushioning"
+    ],
+    "materials": ["Kiln-dried Hardwood", "Premium Upholstery", "High-resilience Foam"],
+    "color": "Navy Blue",
+    "inStock": true,
+    "deliveryTime": "2-3 weeks",
+    "warranty": "5 years",
+    "category": "Sofas"
+  },
+  {
+    "id": 4,
+    "name": "Soviet Style Furniture Set",
+    "image": "/furniture/soviet.png",
+    "model": "/models/soviet_furniture.glb",
+    "price": 1299,
+    "description": "Classic Soviet-era furniture set featuring distinctive retro design elements. Hand-crafted with attention to historical accuracy and modern comfort standards.",
+    "dimensions": "Width: 250cm, Height: 180cm, Depth: 200cm",
+    "features": [
+      "Authentic vintage design",
+      "Solid wood construction",
+      "Original brass hardware",
+      "Period-correct upholstery"
+    ],
+    "materials": ["Solid Oak", "Brass", "Premium Fabric"],
+    "color": "Dark Walnut",
+    "inStock": true,
+    "deliveryTime": "4-6 weeks",
+    "warranty": "2 years",
+    "category": "Furniture Sets"
+  }
+]

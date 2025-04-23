@@ -1,0 +1,642 @@
+/* Modern CSS Reset and Base Styles */
+:root {
+  /* Color Palette */
+  --color-primary: #2C3E50;
+  --color-secondary: #E74C3C;
+  --color-accent: #3498DB;
+  --color-background: #FFFFFF;
+  --color-text: #000000;
+  --color-text-light: #333333;
+  --color-border: #ECF0F1;
+  --color-success: #27AE60;
+  --color-warning: #F39C12;
+  --color-error: #E74C3C;
+  
+  /* Typography */
+  --font-primary: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-secondary: 'Playfair Display', Georgia, serif;
+  --font-size-base: 16px;
+  --font-size-sm: 0.875rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.5rem;
+  
+  /* Spacing */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+  
+  /* Shadows */
+  --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+  --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
+  
+  /* Transitions */
+  --transition-base: all 0.3s ease;
+}
+
+html {
+  overflow: hidden;
+  height: 100%;
+  font-size: var(--font-size-base);
+  font-family: var(--font-primary);
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  height: 100%;
+  background-color: var(--color-background);
+  color: var(--color-text);
+  line-height: 1.6;
+}
+
+div {
+  margin: 0;
+  padding: 0;
+}
+
+.ui-toolip
+{
+	width: auto;
+	height: auto;
+}
+
+/* Modern UI Components */
+#interfaces, #interface-controls
+{
+	position: absolute; 
+/* 	width: 100%; */
+/* 	height: 100%; */
+}
+
+#interfaces
+{
+	z-index: 0;
+}
+
+#interface-controls
+{
+	margin: 0;
+	width: auto;
+	min-width: fit-content;
+	text-align: center;
+	bottom: var(--spacing-lg);
+	z-index: 100;
+	background: #FFFFFF;
+	padding: var(--spacing-md);
+	border-radius: 12px;
+	box-shadow: var(--shadow-md);
+	right: var(--spacing-lg);
+	position: fixed;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: var(--spacing-sm);
+}
+#camera-controls
+{
+	float: left;
+/* 	right: 50%; */
+/* 	bottom: 50px; */
+}
+
+#floorplanner, #viewer
+{  
+  position: absolute;
+  width: 100vw;
+  height:100vh;
+}
+
+#floorplanner-controls 
+{
+  position: fixed;
+  background: #FFFFFF;
+  border-radius: 12px;
+  padding: var(--spacing-md);
+  box-shadow: var(--shadow-md);
+  width: auto;
+  min-width: fit-content;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+  left: var(--spacing-lg);
+  top: var(--spacing-lg);
+}
+
+#main-controls {
+  position: fixed;
+  background: #FFFFFF;
+  border-radius: 12px;
+  padding: var(--spacing-md);
+  box-shadow: var(--shadow-md);
+  width: auto;
+  min-width: fit-content;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+  left: var(--spacing-lg);
+  top: var(--spacing-lg);
+}
+
+#walltextures
+{
+	position: absolute;
+	right: 100px;
+	top: 100px;
+}
+
+/* Modern Button Styles */
+.btn {
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: none;
+  border-radius: 8px;
+  font-family: var(--font-primary);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition-base);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  background-color: var(--color-primary);
+  color: white;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-default {
+  background-color: #FFFFFF;
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+}
+
+.btn-default:hover {
+  background-color: #F8F9FA;
+}
+
+.btn-primary {
+  background-color: var(--color-primary);
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: color-mix(in srgb, var(--color-primary) 90%, black);
+}
+
+.btn-file {
+  display: inline-block;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-file input[type=file] {
+  position: absolute;
+  top: 0;
+  right: 0;
+  min-width: 100%;
+  min-height: 100%;
+  filter: alpha(opacity=0);
+  opacity: 0;
+  cursor: inherit;
+  display: block;
+}
+
+.btn-hint 
+{
+  position: absolute;
+  left: 20px;
+  bottom: 20px;
+  background-color: rgba(0, 0, 0, 0.50);
+  color: #ffffff;
+  padding: 5px 10px;
+  z-index: 10;
+  display: none;
+}
+
+.nav-sidebar > .active > a,
+.nav-sidebar > .active > a:hover,
+.nav-sidebar > .active > a:focus {
+  color: #fff;
+  background-color: #428bca;
+}
+
+/* .ui-dialog, .ui-dialog-content, .ui-widget-content */
+/* { */
+/* 	min-width: 50%; */
+/* 	max-height: 500px; */
+/* 	height: 500px; */
+/*     overflow: auto; */
+/*     position: relative; */
+/*     padding: 0 !important; */
+/* } */
+
+/* Enable multiple lines in bootstrap tooltips */
+.tooltip-inner {
+    background-color: var(--color-primary);
+    border-radius: 8px;
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: var(--font-size-sm);
+    white-space: pre-wrap;
+    max-width: 300px;
+    color: white;
+}
+
+.dg select
+{
+	color: #000000;
+}
+
+/* Design Manager Styles */
+.design-manager {
+  background-color: #FFFFFF;
+  border-radius: 12px;
+  padding: var(--spacing-lg);
+  margin-bottom: var(--spacing-lg);
+  box-shadow: var(--shadow-sm);
+  color: var(--color-text);
+}
+
+.design-actions {
+  display: flex;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+}
+
+.file-input-label {
+  display: inline-block;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.saved-design-item {
+  padding: var(--spacing-md);
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  transition: var(--transition-base);
+  background-color: #FFFFFF;
+  color: var(--color-text);
+}
+
+.saved-design-item:hover {
+  background-color: #F8F9FA;
+}
+
+.design-name {
+  flex-grow: 1;
+  font-family: var(--font-secondary);
+  font-weight: 600;
+  margin-right: var(--spacing-md);
+  color: var(--color-text);
+}
+
+.design-date {
+  color: var(--color-text-light);
+  font-size: var(--font-size-sm);
+  margin-right: var(--spacing-md);
+}
+
+.saved-design-item button {
+  margin-left: 5px;
+}
+
+/* Restore original button icons */
+.glyphicon {
+  font-family: 'Glyphicons Halflings';
+  font-style: normal;
+  font-weight: normal;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  #interface-controls {
+    bottom: var(--spacing-md);
+    padding: var(--spacing-sm);
+    width: auto;
+    right: var(--spacing-sm);
+  }
+  
+  #floorplanner-controls {
+    padding: var(--spacing-sm);
+    width: auto;
+    left: var(--spacing-sm);
+  }
+
+  #main-controls {
+    padding: var(--spacing-sm);
+    width: auto;
+    left: var(--spacing-sm);
+  }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-background: #1A1A1A;
+    --color-text: #FFFFFF;
+    --color-text-light: #B0B0B0;
+    --color-border: #333333;
+  }
+  
+  .panel, .modal-content, .design-manager {
+    background-color: #2A2A2A;
+  }
+  
+  .saved-design-item:hover {
+    background-color: #333333;
+  }
+}
+
+/* Modal and Dialog Styles */
+.modal-content {
+  border-radius: 12px;
+  border: none;
+  box-shadow: var(--shadow-lg);
+  background-color: #FFFFFF;
+}
+
+.modal-header {
+  background-color: #FFFFFF;
+  color: var(--color-text);
+  border-radius: 12px 12px 0 0;
+  padding: var(--spacing-md);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.modal-title {
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.modal-body {
+  padding: var(--spacing-lg);
+  background-color: #FFFFFF;
+  color: var(--color-text);
+}
+
+/* Inventory Panel Styles */
+.panel {
+  border: none;
+  border-radius: 12px;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: var(--spacing-md);
+  overflow: hidden;
+  background-color: #FFFFFF;
+  transition: var(--transition-base);
+}
+
+.panel:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.panel-heading {
+  background-color: #FFFFFF;
+  color: var(--color-text);
+  padding: var(--spacing-md);
+  border-radius: 12px 12px 0 0;
+  border-bottom: 1px solid var(--color-border);
+  cursor: pointer;
+  transition: var(--transition-base);
+}
+
+.panel-heading:hover {
+  background-color: #F8F9FA;
+}
+
+.panel-title {
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-base);
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.panel-body {
+  padding: var(--spacing-md);
+  background-color: #FFFFFF;
+  color: var(--color-text);
+}
+/* Inventory Item Styles */
+.thumbnail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--spacing-sm);
+  margin-bottom: var(--spacing-md);
+  background-color: #FFFFFF;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  transition: var(--transition-base);
+  text-decoration: none;
+  color: var(--color-text);
+}
+
+.thumbnail:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--color-primary);
+}
+
+.thumbnail img {
+  width: 100%;
+  height: auto;
+  max-height: 150px;
+  object-fit: contain;
+  margin-bottom: var(--spacing-sm);
+  border-radius: 4px;
+}
+
+.thumbnail .item-name {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  text-align: center;
+  margin-top: var(--spacing-xs);
+}
+
+/* Inventory Content Styles */
+.inventory-content {
+  max-height: 500px;
+  overflow-y: auto;
+  padding: var(--spacing-sm);
+}
+
+.inventory-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.inventory-content::-webkit-scrollbar-track {
+  background: #F1F1F1;
+  border-radius: 4px;
+}
+
+.inventory-content::-webkit-scrollbar-thumb {
+  background: #C1C1C1;
+  border-radius: 4px;
+}
+
+.inventory-content::-webkit-scrollbar-thumb:hover {
+  background: #A8A8A8;
+}
+
+/* Dark Mode Support for Inventory */
+@media (prefers-color-scheme: dark) {
+  .panel, .thumbnail {
+    background-color: #2A2A2A;
+    border-color: #333333;
+  }
+  
+  .panel-heading {
+    background-color: #2A2A2A;
+    border-color: #333333;
+  }
+  
+  .panel-heading:hover {
+    background-color: #333333;
+  }
+  
+  .thumbnail:hover {
+    border-color: var(--color-accent);
+  }
+  
+  .inventory-content::-webkit-scrollbar-track {
+    background: #333333;
+  }
+  
+  .inventory-content::-webkit-scrollbar-thumb {
+    background: #555555;
+  }
+  
+  .inventory-content::-webkit-scrollbar-thumb:hover {
+    background: #666666;
+  }
+}
+
+/* Bottom Left Controls */
+.bottom-left-controls {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  z-index: 1000;
+  display: block;
+}
+
+.bottom-left-controls .btn {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fff;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  border: 1px solid #ddd;
+  font-size: 24px;
+  color: #333;
+  transition: all 0.3s ease;
+}
+
+.bottom-left-controls .btn:hover {
+  background-color: #f5f5f5;
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+/* Left-aligned Modal */
+.modal-left {
+  position: fixed;
+  top: 0;
+  left: 0;
+  margin: 0;
+  height: 100%;
+  max-width: 400px;
+  width: 100%;
+}
+
+.modal-left .modal-content {
+  height: 100%;
+  border-radius: 0;
+  border: none;
+}
+
+.modal-left .modal-header {
+  border-bottom: 1px solid #eee;
+  padding: 15px;
+}
+
+.modal-left .modal-body {
+  padding: 15px;
+  overflow-y: auto;
+  height: calc(100% - 56px);
+}
+
+/* Update existing modal styles */
+.modal-backdrop {
+  background-color: rgba(0,0,0,0.5);
+}
+
+.modal-open .modal {
+  overflow: hidden;
+}
+
+#context-menu {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  width: 300px;
+  z-index: 1000;
+  background: white;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+
+#context-menu .form-group {
+  margin-bottom: 15px;
+}
+
+#context-menu input[type="range"] {
+  width: 100%;
+  margin: 5px 0;
+}
+
+#context-menu .form-group span {
+  display: inline-block;
+  margin-left: 10px;
+  font-size: 0.9em;
+  color: #666;
+}
+
+#context-menu .checkbox {
+  margin: 10px 0;
+}
+
+#context-menu-delete {
+  margin-top: 15px;
+  width: 100%;
+}
+
+/* Add visual feedback for resize handles */
+.item-resize-handle {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: #fff;
+  border: 2px solid #007bff;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 100;
+}
+
+.item-resize-handle:hover {
+  background: #007bff;
+}

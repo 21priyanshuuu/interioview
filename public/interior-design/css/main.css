@@ -1,0 +1,66 @@
+/* Bottom Left Controls */
+.bottom-left-controls {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  z-index: 1000;
+  display: block;
+}
+
+.bottom-left-controls .btn {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fff;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  border: 1px solid #ddd;
+  font-size: 24px;
+  color: #333;
+  transition: all 0.3s ease;
+}
+
+.bottom-left-controls .btn:hover {
+  background-color: #f5f5f5;
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+/* Left-aligned Modal */
+.modal-left {
+  position: fixed;
+  top: 0;
+  left: 0;
+  margin: 0;
+  height: 100%;
+  max-width: 400px;
+  width: 100%;
+}
+
+.modal-left .modal-content {
+  height: 100%;
+  border-radius: 0;
+  border: none;
+}
+
+.modal-left .modal-header {
+  border-bottom: 1px solid #eee;
+  padding: 15px;
+}
+
+.modal-left .modal-body {
+  padding: 15px;
+  overflow-y: auto;
+  height: calc(100% - 56px);
+}
+
+/* Update existing modal styles */
+.modal-backdrop {
+  background-color: rgba(0,0,0,0.5);
+}
+
+.modal-open .modal {
+  overflow: hidden;
+} 

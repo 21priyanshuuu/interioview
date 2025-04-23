@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Interior Design Studio</title>
+  <meta name="description" content="Professional Interior Design Studio with Auto-Save - Create and visualize your dream spaces with our 3D design tool">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    }
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+    .navbar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background-color: #ffffff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      z-index: 1000;
+      padding: 12px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .navbar a {
+      color: #333;
+      text-decoration: none;
+      font-weight: 600;
+      margin-right: 20px;
+      transition: color 0.2s ease;
+    }
+    .navbar a:hover {
+      color: #0070f3;
+    }
+    .logo {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #0070f3;
+    }
+    .iframe-container {
+      width: 100%;
+      height: 100%;
+      padding-top: 56px;
+      box-sizing: border-box;
+    }
+    .info-button {
+      background-color: #0070f3;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: background-color 0.2s ease;
+    }
+    .info-button:hover {
+      background-color: #0056b3;
+    }
+    .info-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5);
+      z-index: 2000;
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-content {
+      background-color: white;
+      padding: 24px;
+      border-radius: 8px;
+      max-width: 600px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+    .close-button {
+      float: right;
+      font-size: 24px;
+      font-weight: bold;
+      cursor: pointer;
+      color: #555;
+    }
+    .close-button:hover {
+      color: #000;
+    }
+  </style>
+</head>
+<body>
+  <div class="navbar">
+    <div>
+      <span class="logo">InteriorView</span>
+      <a href="/">Home</a>
+    </div>
+    <div>
+      <button class="info-button" onclick="document.getElementById('info-modal').style.display='flex'">How to Use</button>
+    </div>
+  </div>
+  
+  <div class="iframe-container">
+    <iframe src="/interior-design/index.html" allowfullscreen></iframe>
+  </div>
+  
+  <div id="info-modal" class="info-modal" onclick="if(event.target === this) this.style.display='none'">
+    <div class="modal-content">
+      <span class="close-button" onclick="document.getElementById('info-modal').style.display='none'">&times;</span>
+      <h2>Interior Design Studio - User Guide</h2>
+      <p>Welcome to our Interior Design Studio! This tool allows you to create and visualize interior spaces in both 2D and 3D.</p>
+      
+      <h3>Key Features:</h3>
+      <ul>
+        <li><strong>Auto-Save:</strong> Your designs are automatically saved and will persist even if you refresh the page.</li>
+        <li><strong>2D Floorplanner:</strong> Create floor plans with precise measurements.</li>
+        <li><strong>3D Visualization:</strong> View your design in 3D from multiple angles.</li>
+        <li><strong>Furniture Library:</strong> Add furniture and décor items from our extensive collection.</li>
+      </ul>
+      
+      <h3>Basic Controls:</h3>
+      <ul>
+        <li><strong>Draw Walls:</strong> Click the pencil icon and click-drag to create walls.</li>
+        <li><strong>Move Walls:</strong> Click the move icon and drag existing walls.</li>
+        <li><strong>Delete Walls:</strong> Click the delete icon and click on walls to remove them.</li>
+        <li><strong>Add Furniture:</strong> Click the + button to open the furniture library.</li>
+        <li><strong>Switch Views:</strong> Toggle between 2D and 3D views using the buttons at the top right.</li>
+        <li><strong>Camera Controls (3D):</strong> Click and drag to rotate view, right-click and drag to pan, scroll to zoom.</li>
+      </ul>
+      
+      <h3>Tips:</h3>
+      <ul>
+        <li>Press ESC to stop drawing walls.</li>
+        <li>Hold Shift while drawing for straight horizontal or vertical walls.</li>
+        <li>Double-click on corners to adjust elevation.</li>
+        <li>Click on rooms to name them.</li>
+      </ul>
+    </div>
+  </div>
+</body>
+</html> 

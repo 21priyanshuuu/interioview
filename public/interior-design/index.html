@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Architect3D - Floorplan</title>
+<link rel="stylesheet" href="css/jquery-ui.css">
+<link rel="stylesheet" href="css/bootstrap.min.css">
+
+<link href="css/app.css" rel="stylesheet">
+
+<script src="js/lib/jquery-2.1.4.min.js"></script>
+<script src="js/lib/jquery.flip.min.js"></script>
+<script	src="js/lib/dat.gui.min.js"></script>
+<script	src="js/lib/quicksettings.min.js"></script>
+<script src="js/lib/bootstrap.min.js"></script>
+
+<script src="js/bp3djs.js"></script>
+<!-- <script src="js/bp3djs.min.js"></script> -->
+<script src="js/items.js"></script>
+<script src="js/items_gltf.js"></script>
+<script src="js/app.js"></script>
+
+<!-- Add custom styling for design controls -->
+<style>
+  #design-controls {
+    position: fixed !important;
+    top: 50% !important;
+    left: 10px !important;
+    transform: translateY(-50%) !important;
+    right: auto !important;
+    bottom: auto !important;
+    z-index: 1000 !important;
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  }
+  
+  #design-controls .btn-group {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  #design-controls button {
+    margin-bottom: 5px;
+    text-align: left;
+    width: 150px;
+    font-weight: 500;
+  }
+  
+  #design-controls button:last-child {
+    margin-bottom: 0;
+  }
+  
+  #design-controls .glyphicon {
+    margin-right: 5px;
+  }
+  
+  #auto-save-status {
+    position: fixed !important;
+    bottom: 10px !important;
+    left: 10px !important;
+    right: auto !important;
+    padding: 5px 10px;
+    background-color: rgba(0,0,0,0.5);
+    color: white;
+    border-radius: 4px;
+    font-size: 12px;
+  }
+</style>
+
+<!-- Auto-save script -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Set up auto-save functionality
+  window.addEventListener('beforeunload', function() {
+    // Auto-save the current design before the page is unloaded
+    if (window.blueprint3d && window.blueprint3d.model) {
+      const data = window.blueprint3d.model.exportSerialized();
+      localStorage.setItem('autoSavedDesign', data);
+      localStorage.setItem('autoSavedTime', new Date().toISOString());
+    }
+  });
+
+  // Hook into the initialization process
+  const originalInitFloorplanner = window.initFloorplanner;
+  window.initFloorplanner = function() {
+    originalInitFloorplanner();
+    
+    // After the floorplanner is initialized, try to load auto-saved design
+    setTimeout(function() {
+      const autoSavedDesign = localStorage.getItem('autoSavedDesign');
+      const autoSavedTime = localStorage.getItem('autoSavedTime');
+      
+      if (autoSavedDesign && autoSavedTime) {
+        const formattedTime = new Date(autoSavedTime).toLocaleString();
+        const loadSaved = confirm(`Would you like to load your auto-saved design from ${formattedTime}?`);
+        
+        if (loadSaved && window.blueprint3d && window.blueprint3d.model) {
+          window.blueprint3d.model.loadSerialized(autoSavedDesign);
+          showAutoSaveStatus('Auto-saved design loaded');
+        }
+      }
+    }, 1000); // Give a slight delay to make sure everything is loaded
+    
+    // Set up auto-save at regular intervals
+    setInterval(function() {
+      if (window.autoSaveDesign) {
+        window.autoSaveDesign();
+      }
+    }, 30000); // Auto-save every 30 seconds
+    
+    // Add event listeners to model changes to trigger auto-save
+    if (window.blueprint3d) {
+      const events = [
+        BP3DJS.EVENT_ROOM_ATTRIBUTES_CHANGED,
+        BP3DJS.EVENT_ROOM_NAME_CHANGED,
+        BP3DJS.EVENT_WALL_ATTRIBUTES_CHANGED,
+        BP3DJS.EVENT_ITEM_ADDED,
+        BP3DJS.EVENT_ITEM_REMOVED,
+        BP3DJS.EVENT_ITEM_MOVED,
+        BP3DJS.EVENT_ITEM_ROTATED,
+        BP3DJS.EVENT_ITEM_LOADED,
+        BP3DJS.EVENT_CORNER_ATTRIBUTES_CHANGED,
+        BP3DJS.EVENT_CORNER_MOVED
+      ];
+      
+      events.forEach(function(eventType) {
+        window.blueprint3d.three.addEventListener(eventType, function() {
+          // Debounced auto-save on user actions
+          if (window.autoSaveTimeout) {
+            clearTimeout(window.autoSaveTimeout);
+          }
+          window.autoSaveTimeout = setTimeout(function() {
+            if (window.autoSaveDesign) {
+              window.autoSaveDesign();
+            }
+          }, 3000); // Save 3 seconds after the last change
+        });
+      });
+    }
+  };
+});
+</script>
+</head>
+
+<body>
+	<div id='interfaces' class='card'>
+		<div id="floorplanner" class='front'>
+			<div id="floorplanner-controls">
+				<a href="#"
+					class="btn btn-default btn-sm glyphicon glyphicon-floppy-disk"
+					id="new2d" title="New Layout"></a>
+				<button id="move" class="btn btn-sm btn-default" title="Move Walls">
+					<span class="glyphicon glyphicon-move"></span>
+				</button>
+				<button id="draw" class="btn btn-sm btn-default"
+					title="Draw New Walls">
+					<span class="glyphicon glyphicon-pencil"></span>
+				</button>
+				<button id="delete" class="btn btn-sm btn-default"
+					title="Delete Walls">
+					<span class="glyphicon glyphicon-remove"></span>
+				</button>
+				<button id="help2d" class="btn btn-sm btn-default"
+					title="Tips&#10;Shift Key: Snap To Axis and Snap to Grid&#10;ESC: Stop drawing walls&#10;DbL-Click(Corner): Adjust Elevation&#10;Click(Room): Change Name&#10;">
+					<span class="glyphicon glyphicon-info-sign"></span>
+				</button>
+			</div>
+			<div class="btn-hint">Press the "Esc" key to stop drawing
+				walls</div>
+			<canvas id="floorplanner-canvas"></canvas>
+		</div>
+
+		<div id="viewer" class='back'>
+			<!-- Main controls removed and merged with design-controls -->
+		</div>
+	</div>
+	<div id='interface-controls'>
+		<button id="showFloorPlan" class="btn btn-sm btn-default active"
+			title="Edit 2D floorplan">
+			<span class="glyphicon glyphicon-move"></span> Floor Plan
+		</button>
+		<button id="showDesign" class="btn btn-sm btn-default"
+			title="Edit 3D floorplan">
+			<span class="glyphicon glyphicon-move"></span> 3D
+		</button>
+		<div class="btn-group-vertical" id='viewcontrols'>
+			<div class="btn btn-sm btn-default">
+		            <a class="btn btn-default bottom" href="#" id="leftview" title="Show side view (left)">
+		              <span class="glyphicon glyphicon glyphicon-object-align-left"></span>
+		            </a>
+		            <span class="btn-group-vertical">
+		              <a class="btn btn-default" href="#" id="topview" title="Show top view">
+		                <span class="glyphicon glyphicon glyphicon-object-align-horizontal"></span>
+		              </a>
+		              <a class="btn btn-default" href="#" id="isometryview" title="Show 3d view">
+		                <span class="glyphicon glyphicon glyphicon-inbox"></span>
+		              </a>
+		              <a class="btn btn-default" href="#" id="frontview" title="Show front view">
+		                <span class="glyphicon glyphicon glyphicon-object-align-vertical"></span>
+		              </a>
+		            </span>
+		            <a class="btn btn-default bottom" href="#" id="rightview" title="Show side view (right)" >
+		              <span class="glyphicon glyphicon glyphicon-object-align-right"></span>
+		            </a>
+	        </div>
+	        <button id="showSwitchCameraMode" class="btn btn-sm btn-default" title="Switch Camera ortho/perspective">
+				<span class="glyphicon glyphicon-camera"></span>
+			</button>
+			<button id="showSwitchWireframeMode" class="btn btn-sm btn-default" title="Switch wireframe mode">
+				<span class="glyphicon glyphicon-pencil"></span>
+			</button>
+        </div>
+	</div>
+
+	<!-- New Add Items Button Section -->
+	<div id="add-items-control" class="bottom-left-controls">
+		<button id="showAddItems" class="btn btn-sm btn-default" data-toggle="modal" data-target="#add-items-modal" title="Add/Remove items in 3D">
+			<span class="glyphicon glyphicon-plus"></span>
+		</button>
+	</div>
+
+	<!-- Consolidated Design Management Controls -->
+	<div id="design-controls" style="position: fixed; bottom: 10px; right: 10px; z-index: 100;">
+		<div class="btn-group">
+			<!-- Standard design operations -->
+			<button id="saveDesignBtn" class="btn btn-success btn-sm" title="Save Design">
+				<span class="glyphicon glyphicon-save"></span> Save Design
+			</button>
+			<button id="loadDesignBtn" class="btn btn-primary btn-sm" title="Load Design">
+				<span class="glyphicon glyphicon-open"></span> Load Design
+			</button>
+			<button id="importDesignBtn" class="btn btn-info btn-sm" title="Import Design">
+				<span class="glyphicon glyphicon-import"></span> Import Design
+			</button>
+			
+			<!-- Added from main-controls -->
+			<button id="new" class="btn btn-default btn-sm" title="New Layout">
+				<span class="glyphicon glyphicon-floppy-disk"></span> New
+			</button>
+			<button id="saveMesh" class="btn btn-default btn-sm" title="Save Scene as a mesh">
+				<span class="glyphicon glyphicon-asterisk"></span> Save Mesh
+			</button>
+			<button id="saveGLTF" class="btn btn-default btn-sm" title="Save Scene as a GLTF">
+				<span class="glyphicon glyphicon-export"></span> Export GLTF
+			</button>
+		</div>
+	</div>
+
+	<!-- Add Items Modal -->
+	<div class="modal fade" id="add-items-modal" role="dialog">
+		<div class="modal-dialog modal-left">
+			<div class="modal-content">
+				<div class="modal-header">
+		          <button type="button" class="close" data-dismiss="modal">&times;</button>
+		          <h4 class="modal-title">Furniture Inventory</h4>
+		        </div>
+		        <div class="modal-body">
+		          <div id="resize-controls" class="panel panel-default" style="display: none;">
+		            <div class="panel-heading">
+		              <h4 class="panel-title">Resize Controls</h4>
+		            </div>
+		            <div class="panel-body">
+		              <div class="form-group">
+		                <label>Width (cm)</label>
+		                <input type="number" class="form-control" id="resize-width" min="0.1" step="0.1">
+		              </div>
+		              <div class="form-group">
+		                <label>Height (cm)</label>
+		                <input type="number" class="form-control" id="resize-height" min="0.1" step="0.1">
+		              </div>
+		              <div class="form-group">
+		                <label>Depth (cm)</label>
+		                <input type="number" class="form-control" id="resize-depth" min="0.1" step="0.1">
+		              </div>
+		              <div class="checkbox">
+		                <label>
+		                  <input type="checkbox" id="resize-proportional"> Maintain proportions
+		                </label>
+		              </div>
+		            </div>
+		          </div>
+		          <div id="add-items" class="panel-group">
+
+					<div id="floor-items" class="panel panel-default">
+						<div id="floor-items-header" class="panel-heading">
+							<h4 class="panel-title">
+							<a data-toggle="collapse" data-parent="#add-items" href="#floor-items-body">Floor Items</a>
+						</h4>
+					</div>
+						<div id="floor-items-body" class="panel-collapse collapse inventory-content">
+							<div class="row panel-body" id="floor-items-wrapper">
+								<!-- Items added here by items.js -->
+							</div>
+						</div>
+					</div>
+
+
+					<div id="roof-items" class="panel panel-default">
+						<div id="roof-items-header" class="panel-heading">
+							<h4 class="panel-title">
+								<a data-toggle="collapse" data-parent="#add-items" href="#roof-items-body">Ceiling Items</a>
+							</h4>
+						</div>
+						<div id="roof-items-body" class="panel-collapse collapse inventory-content">
+							<div class="row panel-body" id="roof-items-wrapper">
+								<!-- Items added here by items.js -->
+							</div>
+						</div>
+					</div>
+
+
+					<div id="wall-items" class="panel panel-default">
+						<div id="wall-items-header" class="panel-heading"><h4 class="panel-title"><a data-toggle="collapse" data-parent="#add-items" href="#wall-items-body">Wall Items</a></h4></div>
+						<div id="wall-items-body" class="panel-collapse collapse inventory-content">
+							<div class="row panel-body" id="wall-items-wrapper">
+								<!-- Items added here by items.js -->
+							</div>
+						</div>
+					</div>
+					<div id="in-wall-items" class="panel panel-default">
+						<div id="in-wall-items-header" class="panel-heading"><h4 class="panel-title"><a data-toggle="collapse" data-parent="#add-items" href="#in-wall-items-body">In Wall Items</a></h4></div>
+						<div id="in-wall-items-body" class="panel-collapse collapse inventory-content">
+							<div class="row panel-body" id="in-wall-items-wrapper">
+								<!-- Items added here by items.js -->
+							</div>
+						</div>
+					</div>
+					<div id="in-wall-floor-items" class="panel panel-default">
+						<div id="in-wall-floor-items-header" class="panel-heading"><h4 class="panel-title"><a data-toggle="collapse" data-parent="#add-items" href="#in-wall-floor-items-body">In Wall Floor Items</a></h4></div>
+						<div id="in-wall-floor-items-body" class="panel-collapse collapse inventory-content">
+							<div class="row panel-body" id="in-wall-floor-items-wrapper">
+								<!-- Items added here by items.js -->
+							</div>
+						</div>
+					</div>
+					<div id="on-floor-items" class="panel panel-default">
+						<div id="on-floor-items-header" class="panel-heading"><h4 class="panel-title"><a data-toggle="collapse" data-parent="#add-items" href="#on-floor-items-body">On Floor Items</a></h4></div>
+						<div id="on-floor-items-body" class="panel-collapse collapse inventory-content">
+							<div class="row panel-body" id="on-floor-items-wrapper">
+								<!-- Items added here by items.js -->
+							</div>
+						</div>
+					</div>
+					<div id="wall-floor-items" class="panel panel-default">
+						<div id="wall-floor-items-header" class="panel-heading"><h4 class="panel-title"><a data-toggle="collapse" data-parent="#add-items" href="#wall-floor-items-body">Wall-Floor Items</a></h4></div>
+						<div id="wall-floor-items-body" class="panel-collapse collapse inventory-content">
+							<div class="row panel-body" id="wall-floor-items-wrapper">
+								<!-- Items added here by items.js -->
+							</div>
+						</div>
+					</div>
+					<div id="item-items" class="panel panel-default">
+						<div id="item-items-header" class="panel-heading">
+							<h4 class="panel-title">
+								<a data-toggle="collapse" data-parent="#add-items" href="#item-items-body">Anywhere Items</a>
+							</h4>
+						</div>
+						<div id="item-items-body" class="panel-collapse collapse inventory-content">
+							<div class="row panel-body" id="item-items-wrapper">
+								<!-- Items added here by items.js -->
+							</div>
+						</div>
+					</div>
+				</div>
+		        </div>
+		        <div class="modal-footer">
+		          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		        </div>
+			</div>
+		</div>
+	</div>
+
+	<div id="context-menu" class="panel panel-default" style="display: none;">
+		<div class="panel-heading">
+			<h4 class="panel-title" id="context-menu-name">Selected Item</h4>
+		</div>
+		<div class="panel-body">
+			<div class="form-group">
+				<label>Width (cm)</label>
+				<input type="number" class="form-control" id="item-width" min="10" max="500" step="1">
+			</div>
+			<div class="form-group">
+				<label>Height (cm)</label>
+				<input type="number" class="form-control" id="item-height" min="10" max="500" step="1">
+			</div>
+			<div class="form-group">
+				<label>Depth (cm)</label>
+				<input type="number" class="form-control" id="item-depth" min="10" max="500" step="1">
+			</div>
+			<div class="checkbox">
+				<label>
+					<input type="checkbox" id="proportional-resize"> Maintain Size Ratio
+				</label>
+			</div>
+			<div class="checkbox">
+				<label>
+					<input type="checkbox" id="fixed"> Locked in place
+				</label>
+			</div>
+			<button id="context-menu-delete" class="btn btn-danger btn-sm">Delete Item</button>
+		</div>
+	</div>
+
+	<!-- Auto-save Status Indicator -->
+	<div id="auto-save-status" style="position: fixed; bottom: 10px; right: 10px; padding: 5px 10px; background-color: rgba(0,0,0,0.5); color: white; border-radius: 4px; font-size: 12px; display: none;">
+		Auto-saving...
+	</div>
+	
+	<!-- Load Design Modal -->
+	<div class="modal fade" id="load-design-modal" role="dialog">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h4 class="modal-title">Load Saved Design</h4>
+				</div>
+				<div class="modal-body">
+					<p>Select a design to load:</p>
+					<div class="list-group" id="saved-designs-list">
+						<!-- Saved designs will be listed here -->
+					</div>
+					<div id="no-designs-message" style="display: none;">
+						<p class="text-muted">No saved designs found.</p>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<!-- Save Design Modal -->
+	<div class="modal fade" id="save-design-modal" role="dialog">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h4 class="modal-title">Save Design</h4>
+				</div>
+				<div class="modal-body">
+					<div class="form-group">
+						<label for="design-name">Enter a name for your design:</label>
+						<input type="text" class="form-control" id="design-name" placeholder="My Design">
+					</div>
+					<div class="alert alert-danger" id="save-error" style="display: none;">
+						Please enter a name for your design.
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+					<button type="button" class="btn btn-primary" id="confirm-save-btn">Save</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
